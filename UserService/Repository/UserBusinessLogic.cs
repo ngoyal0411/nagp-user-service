@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 using System.Linq;
 using UserService.Models;
 
@@ -6,18 +8,32 @@ namespace UserService.Repository
 {
     public class UserBusinessLogic : IUserBusiness
     {
-        private User _users = new User { FirstName = "Nishu", LastName = "Goel", Age = "25", EmailId = "nishu.goel@nagarro.com" };
-            //new User {FirstName = "Ritu", LastName = "Goel", Username = "user", Password = "user", Role = Role.User }
-        
-    
-        public User GetAll()
+        public NagpContext DbContext { get; }
+        public UserBusinessLogic(NagpContext nagpContext)
         {
-            return _users;
+            DbContext = nagpContext;
         }
-
-        public User GetById(int id)
+       
+        public User GetUser()
         {
-            return _users;
+            User user = new User();
+            using (MySqlConnection conn = DbContext.Connection)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("select * from user where id = 1", conn);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        user.FirstName = reader["firstname"].ToString();
+                        user.LastName = reader["lastname"].ToString();
+                        user.Age = reader["age"].ToString();
+                        user.EmailId = reader["emailid"].ToString();
+                    }
+                }
+            }
+            return user;
         }
     }
 }

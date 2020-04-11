@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenTracing;
 using OpenTracing.Util;
+using UserService.Models;
 using UserService.Repository;
 
 namespace UserService
@@ -27,7 +28,7 @@ namespace UserService
         {
             Configuration = configuration;
         }
-
+       
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -37,8 +38,8 @@ namespace UserService
 
             // configure DI for application services
             services.AddScoped<IUserBusiness, UserBusinessLogic>();
-            string serviceName1 = Assembly.GetEntryAssembly().GetName().Name;
-
+            services.AddTransient(_ => new NagpContext(Configuration["ConnectionStrings:DefaultConnection"]));
+          
             services.AddSingleton<ITracer>(serviceProvider =>
             {
                 string serviceName = Assembly.GetEntryAssembly().GetName().Name;
@@ -49,13 +50,13 @@ namespace UserService
 
                 var reporter = new RemoteReporter.Builder()
                         .WithLoggerFactory(loggerFactory)
-                        .WithSender(new UdpSender("jaeger-agent", 6831, 0))
+                        //.WithSender(new UdpSender("jaeger-agent", 6831, 0))
                         .Build();
 
                 ITracer tracer = new Tracer.Builder(serviceName)
                     .WithLoggerFactory(loggerFactory)
                     .WithSampler(sampler)
-                    .WithReporter(reporter)
+                    //.WithReporter(reporter)
                     .Build();
 
                 GlobalTracer.Register(tracer);

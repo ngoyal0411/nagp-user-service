@@ -23,14 +23,14 @@ namespace UserService.Controllers
         [HttpGet]
         public User Get()
         {
-            return _userService.GetAll();
+            return _userService.GetUser();
         }
 
         // GET: api/User/5
         [HttpGet("{id}", Name = "Get")]
         public User Get(int id)
         {
-            return _userService.GetById(id);
+            return _userService.GetUser();
         }
 
         // POST: api/User

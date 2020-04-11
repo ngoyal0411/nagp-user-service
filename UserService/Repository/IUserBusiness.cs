@@ -6,8 +6,7 @@ namespace UserService.Repository
 {
     public interface IUserBusiness
     {
-        User GetAll();
-        User GetById(int id);
+             User GetUser();
     }
     
 }
