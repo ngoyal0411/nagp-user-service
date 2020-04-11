@@ -50,13 +50,13 @@ namespace UserService
 
                 var reporter = new RemoteReporter.Builder()
                         .WithLoggerFactory(loggerFactory)
-                        //.WithSender(new UdpSender("jaeger-agent", 6831, 0))
+                        .WithSender(new UdpSender("jaeger-agent", 6831, 0))
                         .Build();
 
                 ITracer tracer = new Tracer.Builder(serviceName)
                     .WithLoggerFactory(loggerFactory)
                     .WithSampler(sampler)
-                    //.WithReporter(reporter)
+                    .WithReporter(reporter)
                     .Build();
 
                 GlobalTracer.Register(tracer);
